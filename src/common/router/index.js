@@ -7,29 +7,14 @@ import HomeIndex from "../../lobby/home/Index";
 
 import ByFrameView from "../../backyard/Frame.vue";
 
-
-import CarouselCreate from "../../backyard/carousel/Create";
-import CarouselList from "../../backyard/carousel/List";
-
 import SiteCreate from "../../backyard/site/Create";
 import SiteList from "../../backyard/site/List";
 
-import ColumnCreate from "../../backyard/column/Create";
-import ColumnList from "../../backyard/column/List";
-import Pictures from "../../backyard/column/Pictures";
 
 import UserLogin from "../../backyard/user/Login.vue";
 import UserList from "../../backyard/user/List";
 import UserChangePassword from "../../backyard/user/ChangePassword";
 import UserCreate from "../../backyard/user/Create";
-import ArticleList from "../../backyard/article/List.vue";
-import ArticleCreate from "../../backyard/article/Create.vue";
-import ArticleDetail from "../../backyard/article/Detail.vue";
-
-
-import VersionList from "../../backyard/version/List.vue";
-import VersionCreate from "../../backyard/version/Create.vue";
-import VersionDetail from "../../backyard/version/Detail.vue";
 
 
 import PreferenceIndex from "../../backyard/preference/Index";
@@ -49,207 +34,8 @@ const router = new Router({
       path: "/by",
       component: ByFrameView,
       children: [
-        {
-          path: "",
-          name: "ArticleList",
-          component: ArticleList,
-          meta: {
-            title: "文章列表",
-            requiresAuth: true,
-            breadcrumbs: [
-              {
-                name: "ArticleList",
-                title: "文章列表"
-              }
-            ]
-          }
-        },
-        {
-          path: "article/create",
-          name: "ArticleCreate",
-          component: ArticleCreate,
-          meta: {
-            title: "新建文章",
-            requiresAuth: true,
-            breadcrumbs: [
-              {
-                name: "ArticleList",
-                title: "文章列表"
-              },
-              {
-                name: "ArticleCreate",
-                title: "新建文章"
-              }
-            ]
-          }
-        },
-        {
-          path: "article/edit/:uuid",
-          name: "ArticleEdit",
-          component: ArticleCreate,
-          meta: {
-            title: "编辑文章",
-            requiresAuth: true,
-            breadcrumbs: [
-              {
-                name: "ArticleList",
-                title: "文章列表"
-              },
-              {
-                name: "ArticleEdit",
-                title: "编辑文章"
-              }
-            ]
-          }
-        },
-        {
-          path: "article/detail/:uuid",
-          name: "ArticleDetail",
-          component: ArticleDetail,
-          meta: {
-            title: "文章详情",
-            requiresAuth: true,
-            breadcrumbs: [
-              {
-                name: "ArticleList",
-                title: "文章列表"
-              },
-              {
-                name: "ArticleDetail",
-                title: "文章详情"
-              }
-            ]
-          }
-        },
 
-        {
-          path: "version/list",
-          name: "VersionList",
-          component: VersionList,
-          meta: {
-            title: "版本列表",
-            requiresAuth: true,
-            breadcrumbs: [
-              {
-                name: "VersionList",
-                title: "版本列表"
-              }
-            ]
-          }
-        },
-        {
-          path: "version/create",
-          name: "VersionCreate",
-          component: VersionCreate,
-          meta: {
-            title: "新建版本",
-            requiresAuth: true,
-            breadcrumbs: [
-              {
-                name: "VersionList",
-                title: "版本列表"
-              },
-              {
-                name: "VersionCreate",
-                title: "新建版本"
-              }
-            ]
-          }
-        },
-        {
-          path: "version/edit/:uuid",
-          name: "VersionEdit",
-          component: VersionCreate,
-          meta: {
-            title: "编辑版本",
-            requiresAuth: true,
-            breadcrumbs: [
-              {
-                name: "VersionList",
-                title: "版本列表"
-              },
-              {
-                name: "VersionEdit",
-                title: "编辑版本"
-              }
-            ]
-          }
-        },
-        {
-          path: "version/detail/:uuid",
-          name: "VersionDetail",
-          component: VersionDetail,
-          meta: {
-            title: "版本详情",
-            requiresAuth: true,
-            breadcrumbs: [
-              {
-                name: "VersionList",
-                title: "版本列表"
-              },
-              {
-                name: "VersionDetail",
-                title: "版本详情"
-              }
-            ]
-          }
-        },
 
-        {
-          path: "carousel/list",
-          name: "CarouselList",
-          component: CarouselList,
-          meta: {
-            title: "轮播图列表",
-            requiresAuth: true,
-            breadcrumbs: [
-              {
-                name: "CarouselList",
-                title: "轮播图列表"
-              }
-            ]
-          }
-        },
-
-        {
-          path: "carousel/create",
-          name: "CarouselCreate",
-          component: CarouselCreate,
-          meta: {
-            title: "新建轮播图",
-            requiresAuth: true,
-            breadcrumbs: [
-              {
-                name: "CarouselList",
-                title: "轮播图列表"
-              },
-              {
-                name: "CarouselCreate",
-                title: "新建轮播图"
-              }
-            ]
-          }
-        },
-
-        {
-          path: "carousel/edit/:uuid",
-          name: "CarouselEdit",
-          component: CarouselCreate,
-          meta: {
-            title: "编辑轮播图",
-            requiresAuth: true,
-            breadcrumbs: [
-              {
-                name: "CarouselList",
-                title: "轮播图列表"
-              },
-              {
-                name: "CarouselEdit",
-                title: "编辑轮播图"
-              }
-            ]
-          }
-        },
         {
           path: "site/list",
           name: "SiteList",
@@ -306,77 +92,7 @@ const router = new Router({
           }
         },
 
-        {
-          path: "column/list",
-          name: "ColumnList",
-          component: ColumnList,
-          meta: {
-            title: "首页栏目列表",
-            requiresAuth: true,
-            breadcrumbs: [
-              {
-                name: "ColumnList",
-                title: "首页栏目列表"
-              }
-            ]
-          }
-        },
 
-        {
-          path: "column/create",
-          name: "ColumnCreate",
-          component: ColumnCreate,
-          meta: {
-            title: "新建首页栏目",
-            requiresAuth: true,
-            breadcrumbs: [
-              {
-                name: "ColumnList",
-                title: "首页栏目列表"
-              },
-              {
-                name: "ColumnCreate",
-                title: "新建首页栏目"
-              }
-            ]
-          }
-        },
-
-        {
-          path: "column/edit/:uuid",
-          name: "ColumnEdit",
-          component: ColumnCreate,
-          meta: {
-            title: "编辑首页栏目",
-            requiresAuth: true,
-            breadcrumbs: [
-              {
-                name: "ColumnList",
-                title: "首页栏目列表"
-              },
-              {
-                name: "ColumnEdit",
-                title: "编辑首页栏目"
-              }
-            ]
-          }
-        },
-
-        {
-          path: "column/pictures",
-          name: "Pictures",
-          component: Pictures,
-          meta: {
-            title: "图片选择",
-            requiresAuth: true,
-            breadcrumbs: [
-              {
-                name: "Pictures",
-                title: "图片选择"
-              }
-            ]
-          }
-        },
 
         {
           path: "user/login",

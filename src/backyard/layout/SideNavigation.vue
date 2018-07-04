@@ -22,33 +22,11 @@
           </router-link>
         </li>
 
-        <li v-if="user.hasPermission(FeatureType.USER_MINE)">
-          <router-link to="/by">
-            <i class="w14 fa fa-book"></i>
-            <span>文章列表</span>
-          </router-link>
-        </li>
-
-        <li v-if="user.hasPermission(FeatureType.USER_MINE)">
-          <router-link to="/by/carousel/list">
-            <i class="w14 fa fa-image"></i>
-            <span>轮播列表</span>
-          </router-link>
-        </li>
-
 
         <li v-if="user.hasPermission(FeatureType.USER_MINE)">
           <router-link to="/by/site/list">
             <i class="w14 fa fa-star"></i>
             <span>站点列表</span>
-          </router-link>
-        </li>
-
-
-        <li v-if="user.hasPermission(FeatureType.USER_MINE)">
-          <router-link to="/by/column/list">
-            <i class="w14 fa fa-star"></i>
-            <span>首页栏目</span>
           </router-link>
         </li>
 
@@ -65,15 +43,6 @@
             <span>用户列表</span>
           </router-link>
         </li>
-
-
-        <li v-if="user.hasPermission(FeatureType.USER_MANAGE)">
-          <router-link to="/by/version/list">
-            <i class="w14 fa fa-gitlab"></i>
-            <span>版本列表</span>
-          </router-link>
-        </li>
-
 
         <li>
           <a href="/" @click.stop.prevent="goHome">
