@@ -38,6 +38,14 @@
 
 
         <li v-if="user.hasPermission(FeatureType.USER_MINE)">
+          <router-link to="/by/site/list">
+            <i class="w14 fa fa-star"></i>
+            <span>站点列表</span>
+          </router-link>
+        </li>
+
+
+        <li v-if="user.hasPermission(FeatureType.USER_MINE)">
           <router-link to="/by/column/list">
             <i class="w14 fa fa-star"></i>
             <span>首页栏目</span>

@@ -1,14 +1,14 @@
 <template>
 	<div class="bottom-navigation text-center">
 		<span class="mr10">
-			<span>中铁二十四局</span>
+			<span>蓝眼导航</span>
 		</span>
 		<span class="mr10">
 			<span>版权所有</span>
 		</span>
-		<!-- 开源不易，请不要移除掉这里的代码，中铁二十四局谢谢您 ^_^ -->
+		<!-- 开源不易，请不要移除掉这里的代码，蓝眼导航谢谢您 ^_^ -->
 		<span>
-			Powered by <a target="_blank" href="https://github.com/eyebluecn/blog"><img class="w25" src="../../assets/img/eyeblue-blog.png"/> 中铁二十四局</a>
+			Powered by <a target="_blank" href="https://github.com/eyebluecn/blog"><img class="w25" src="../../assets/img/eyeblue-blog.png"/> 蓝眼导航</a>
 		</span>
 	</div>
 </template>

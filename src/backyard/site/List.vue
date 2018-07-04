@@ -3,31 +3,25 @@
     <div class="row">
       <div class="col-md-12">
         <div class="pedia-navigation">
-          <span class="item active">轮播图列表</span>
+          <span class="item active">站点列表</span>
         </div>
       </div>
     </div>
 
-
     <div class="row">
       <div class="col-lg-12">
         <NbFilter :filters="pager.filters" @change="search">
-          <router-link class="btn btn-primary btn-sm" to="/by/carousel/create">
+          <router-link class="btn btn-primary btn-sm" to="/by/site/create">
             <i class="fa fa-plus"></i>
-            创建轮播图
+            创建站点
           </router-link>
         </NbFilter>
       </div>
-      <div class="col-lg-12" v-for="(carousel,index) in pager.data">
+      <div class="col-lg-12" v-for="(site,index) in pager.data">
 
         <div class="p10 bg-white br4 mb10">
 
           <div class="media">
-            <div class="pull-left">
-              <router-link :to="'/by/carousel/edit/'+carousel.uuid">
-                <img class="br5 w200" :src="carousel.getPosterUrl()">
-              </router-link>
-            </div>
             <div class="pull-right">
 
 
@@ -40,41 +34,24 @@
                 <i class="fa fa-arrow-down f18"></i>
               </a>
 
-              <router-link class="btn-action" :to="'/by/carousel/edit/'+carousel.uuid">
+              <router-link class="btn-action" :to="'/by/site/edit/'+site.uuid">
                 <i class="fa fa-pencil text-info f18"></i>
               </router-link>
               <a class="btn-action" href="javascript:void(0)" title="删除"
-                 @click.stop.prevent="carousel.confirmDel(refresh)">
+                 @click.stop.prevent="site.confirmDel(refresh)">
                 <i class="fa fa-trash text-danger f18"></i>
               </a>
             </div>
 
             <div class="media-body">
               <div class="cell-title">
-                <i v-if="!carousel.enable" title="已禁用，app中不会显示" class="fa fa-lock text-danger"></i>
-                {{carousel.title}}
-              </div>
-              <div class="cell-content mt5">
-                <span :class="'label label-'+carousel.getJumpTypeStyle()">{{carousel.getJumpTypeName()}}</span>
-              </div>
-              <div class="cell-content mt5" v-if="carousel.jumpType === 'URL'">
-                目标url：
-                <a :href="carousel.payload" target="_blank">
-                  {{carousel.payload}}
-                </a>
-              </div>
-              <div class="cell-content mt5" v-if="carousel.jumpType === 'ARTICLE'">
-                目标文章：
-                <router-link :to="'/by/article/detail/'+carousel.article.uuid">
-                  {{carousel.article.title}}
-                </router-link>
+                <i v-if="!site.visible" title="不显示" class="fa fa-lock text-danger"></i>
+                {{site.name}}
               </div>
 
-              <div class="cell-content mt5" v-if="carousel.jumpType === 'DIRECTORY'">
-                目标栏目：
-                <router-link :to="'/by?directoryUuid='+carousel.directory.uuid">
-                  {{carousel.directory.name}}
-                </router-link>
+
+              <div class="cell-content mt5">
+                {{site.url}}
               </div>
 
             </div>
@@ -101,12 +78,12 @@
   import NbPager from '../../common/widget/NbPager.vue'
   import NbSwitcher from '../../common/widget/NbSwitcher'
   import Pager from '../../common/model/base/Pager'
-  import Carousel from '../../common/model/carousel/Carousel'
+  import Site from '../../common/model/site/Site'
 
   export default {
     data() {
       return {
-        pager: new Pager(Carousel),
+        pager: new Pager(Site),
         user: this.$store.state.user
       }
     },
@@ -120,11 +97,11 @@
         if (index !== 0) {
 
           let that = this
-          let carousel1 = this.pager.data[index - 1];
-          let carousel2 = this.pager.data[index];
-          carousel2.httpSort(carousel1, carousel2, function () {
+          let site1 = this.pager.data[index - 1];
+          let site2 = this.pager.data[index];
+          site2.httpSort(site1, site2, function () {
             that.pager.data.splice(index, 1);
-            that.pager.data.splice(index - 1, 0, carousel2);
+            that.pager.data.splice(index - 1, 0, site2);
           });
 
         }
@@ -133,13 +110,12 @@
 
         if (index !== this.pager.data.length - 1) {
 
-
           let that = this
-          let carousel1 = this.pager.data[index + 1];
-          let carousel2 = this.pager.data[index];
-          carousel2.httpSort(carousel1, carousel2, function () {
+          let site1 = this.pager.data[index + 1];
+          let site2 = this.pager.data[index];
+          site2.httpSort(site1, site2, function () {
             that.pager.data.splice(index, 1);
-            that.pager.data.splice(index + 1, 0, carousel2);
+            that.pager.data.splice(index + 1, 0, site2);
           });
 
         }
@@ -150,6 +126,7 @@
         this.refresh()
       },
       refresh() {
+        console.log("刷新了？")
         this.pager.httpFastPage()
       }
     },
@@ -163,10 +140,6 @@
       if (this.pager.getFilter('orderSort').isEmpty()) {
         this.pager.setFilterValue('orderSort', 'DESC')
       }
-
-      this.pager.setFilterValue("withArticle", true)
-      this.pager.setFilterValue("withDirectory", true)
-
 
       this.refresh()
     }

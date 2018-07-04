@@ -6,8 +6,13 @@ import HomeIndex from "../../lobby/home/Index";
 
 
 import ByFrameView from "../../backyard/Frame.vue";
+
+
 import CarouselCreate from "../../backyard/carousel/Create";
 import CarouselList from "../../backyard/carousel/List";
+
+import SiteCreate from "../../backyard/site/Create";
+import SiteList from "../../backyard/site/List";
 
 import ColumnCreate from "../../backyard/column/Create";
 import ColumnList from "../../backyard/column/List";
@@ -241,6 +246,61 @@ const router = new Router({
               {
                 name: "CarouselEdit",
                 title: "编辑轮播图"
+              }
+            ]
+          }
+        },
+        {
+          path: "site/list",
+          name: "SiteList",
+          component: SiteList,
+          meta: {
+            title: "站点列表",
+            requiresAuth: true,
+            breadcrumbs: [
+              {
+                name: "SiteList",
+                title: "站点列表"
+              }
+            ]
+          }
+        },
+
+        {
+          path: "site/create",
+          name: "SiteCreate",
+          component: SiteCreate,
+          meta: {
+            title: "新建站点",
+            requiresAuth: true,
+            breadcrumbs: [
+              {
+                name: "SiteList",
+                title: "站点列表"
+              },
+              {
+                name: "SiteCreate",
+                title: "新建站点"
+              }
+            ]
+          }
+        },
+
+        {
+          path: "site/edit/:uuid",
+          name: "SiteEdit",
+          component: SiteCreate,
+          meta: {
+            title: "编辑站点",
+            requiresAuth: true,
+            breadcrumbs: [
+              {
+                name: "SiteList",
+                title: "站点列表"
+              },
+              {
+                name: "SiteEdit",
+                title: "编辑站点"
               }
             ]
           }
