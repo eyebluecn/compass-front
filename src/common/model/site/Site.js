@@ -59,6 +59,8 @@ export default class Site extends BaseEntity {
     let form = {
       name: this.name,
       url: this.url,
+      faviconTankUuid: this.faviconTankUuid,
+      faviconUrl: this.faviconUrl,
       visible: this.visible
     };
 

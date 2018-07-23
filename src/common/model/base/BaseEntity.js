@@ -1,59 +1,59 @@
-import Base from './Base'
-import {str2Date} from '../../filter/time'
-import Filter from './Filter'
-import {MessageBox, Notification as NotificationBox} from 'element-ui'
-import Schema from '../../../../node_modules/async-validator'
+import Base from "./Base";
+import { str2Date } from "../../filter/time";
+import Filter from "./Filter";
+import { MessageBox, Notification as NotificationBox } from "element-ui";
+import Schema from "../../../../node_modules/async-validator";
 
 export default class BaseEntity extends Base {
 
   constructor(args) {
-    super(args)
-    this.uuid = null
-    this.sort = null
-    this.createTime = null
-    this.updateTime = null
-    this.deleted = false
+    super(args);
+    this.uuid = null;
+    this.sort = null;
+    this.createTime = null;
+    this.updateTime = null;
+    this.deleted = false;
 
     //表单验证专用
-    this.validatorSchema = null
+    this.validatorSchema = null;
   }
 
   //This is just a intermedia method.
   render(obj) {
 
-    super.render(obj)
-    this.createTime = str2Date(this.createTime)
-    this.updateTime = str2Date(this.updateTime)
+    super.render(obj);
+    this.createTime = str2Date(this.createTime);
+    this.updateTime = str2Date(this.updateTime);
 
   }
 
   //获取过滤器，必须每次动态生成，否则会造成filter逻辑混乱。
   getFilters() {
     return [
-      new Filter('SORT', 'ID', 'orderId')
-    ]
+      new Filter("SORT", "ID", "orderId")
+    ];
   };
 
   //获取表单的验证规则
   getSchema() {
 
-    return null
+    return null;
 
   }
 
 
 //该实体目前是否能够编辑
   canEdit() {
-    console.error('canEdit: you should override this base method.')
+    console.error("canEdit: you should override this base method.");
   }
 
 //该实体目前是否能够删除
   canDel() {
-    console.error('canDel: you should override this base method.')
+    console.error("canDel: you should override this base method.");
   }
 
   getForm() {
-    console.error('getForm: you should override this base method.')
+    console.error("getForm: you should override this base method.");
   }
 
   /*validate () {
@@ -61,127 +61,127 @@ export default class BaseEntity extends Base {
   }*/
 
   validate(validatorSchema = this.validatorSchema) {
-    let valid = true
-    let that = this
-    let schema = validatorSchema
+    let valid = true;
+    let that = this;
+    let schema = validatorSchema;
     if (!schema) {
-      return true
+      return true;
     }
 
-    let validateArr = Object.keys(schema)      //遍历规则的key值
-    let validateObj = {}
-    validateArr.forEach(function (i) {
-      validateObj[i] = that[i]
-      schema[i].error = null
-    })
-    let descriptor = {}
-    validateArr.forEach(function (i) {
-      descriptor[i] = schema[i].rules
-    })
+    let validateArr = Object.keys(schema);      //遍历规则的key值
+    let validateObj = {};
+    validateArr.forEach(function(i) {
+      validateObj[i] = that[i];
+      schema[i].error = null;
+    });
+    let descriptor = {};
+    validateArr.forEach(function(i) {
+      descriptor[i] = schema[i].rules;
+    });
 
     new Schema(descriptor).validate(validateObj, (errors, fields) => {
 
       if (errors) {
-        errors.forEach(function (i) {
-          schema[i.field].error = i.message
-        })
-        valid = false
+        errors.forEach(function(i) {
+          schema[i.field].error = i.message;
+        });
+        valid = false;
       }
-    })
+    });
 
-    return valid
+    return valid;
   }
 
   //common http detail methods.
   httpDetail(successCallback, errorCallback) {
 
-    let that = this
+    let that = this;
     if (!this.uuid) {
 
-      this.errorMessage = '没有详情！'
+      this.errorMessage = "没有详情！";
 
-      this.defaultErrorHandler(this.errorMessage, errorCallback)
+      this.defaultErrorHandler(this.errorMessage, errorCallback);
 
-      return
+      return;
     }
 
-    let url = this.getUrlDetail(this.uuid)
+    let url = this.getUrlDetail(this.uuid);
 
     if (!url) {
-      return
+      return;
     }
 
-    this.detailLoading = true
+    this.detailLoading = true;
 
-    this.httpGet(url, {}, function (response) {
-      that.detailLoading = false
-      that.editMode = true
+    this.httpGet(url, {}, function(response) {
+      that.detailLoading = false;
+      that.editMode = true;
 
-      that.render(response.data.data)
+      that.render(response.data.data);
 
-      successCallback && successCallback(response)
+      successCallback && successCallback(response);
 
-    }, function (response) {
+    }, function(response) {
 
-      that.detailLoading = false
+      that.detailLoading = false;
 
-      if (typeof errorCallback === 'function') {
-        errorCallback()
+      if (typeof errorCallback === "function") {
+        errorCallback();
       } else {
         //没有传入错误处理的方法就采用默认处理方法：toast弹出该错误信息。
-        that.defaultErrorHandler(response)
+        that.defaultErrorHandler(response);
       }
-    })
+    });
 
   }
 
   httpSave(successCallback, errorCallback) {
 
-    let that = this
+    let that = this;
 
-    let url = this.getUrlCreate()
+    let url = this.getUrlCreate();
     if (this.uuid) {
-      url = this.getUrlEdit()
+      url = this.getUrlEdit();
     }
 
     if (!this.validate()) {
-      this.errorMessage = "验证规则未通过，请按照要求修改后再提交！"
-      that.defaultErrorHandler(this.errorMessage, errorCallback)
-      return
+      this.errorMessage = "验证规则未通过，请按照要求修改后再提交！";
+      that.defaultErrorHandler(this.errorMessage, errorCallback);
+      return;
     }
 
-    this.httpPost(url, this.getForm(), function (response) {
+    this.httpPost(url, this.getForm(), function(response) {
 
-      that.render(response.data.data)
+      that.render(response.data.data);
 
-      successCallback && successCallback(response)
+      successCallback && successCallback(response);
 
-    }, errorCallback)
+    }, errorCallback);
 
   }
 
   httpDel(successCallback, errorCallback) {
 
-    let that = this
+    let that = this;
     if (!this.uuid) {
 
-      this.errorMessage = '没有uuid，无法删除！'
-      that.defaultErrorHandler(this.errorMessage, errorCallback)
+      this.errorMessage = "没有uuid，无法删除！";
+      that.defaultErrorHandler(this.errorMessage, errorCallback);
 
-      return
+      return;
     }
 
-    let url = this.getUrlDel(this.uuid)
+    let url = this.getUrlDel(this.uuid);
 
     if (!url) {
-      return
+      return;
     }
 
-    this.httpPost(url, {}, function (response) {
+    this.httpPost(url, {}, function(response) {
 
-      successCallback && successCallback(response)
+      successCallback && successCallback(response);
 
-    }, errorCallback)
+    }, errorCallback);
 
   }
 
@@ -192,22 +192,22 @@ export default class BaseEntity extends Base {
     let uuid2 = entity2.uuid;
     let sort2 = entity1.sort;
 
-    let that = this
+    let that = this;
 
     if (!uuid1 || !uuid2 || !(sort1 === 0 || sort1) || !(sort2 === 0 || sort2)) {
 
-      this.errorMessage = '参数不齐！'
-      that.defaultErrorHandler(this.errorMessage, failureCallback)
+      this.errorMessage = "参数不齐！";
+      that.defaultErrorHandler(this.errorMessage, failureCallback);
 
-      return
+      return;
     }
 
-    let url = this.getUrlSort()
+    let url = this.getUrlSort();
 
     if (!url) {
 
-      that.defaultErrorHandler(this.errorMessage, failureCallback)
-      return
+      that.defaultErrorHandler(this.errorMessage, failureCallback);
+      return;
     }
 
     let params = {
@@ -215,93 +215,93 @@ export default class BaseEntity extends Base {
       sort1: sort1,
       uuid2: uuid2,
       sort2: sort2
-    }
+    };
 
-    this.httpPost(url, params, function () {
+    this.httpPost(url, params, function() {
       entity1.sort = sort1;
       entity2.sort = sort2;
       if (typeof successCallback === "function") {
         successCallback();
       }
 
-    }, failureCallback)
+    }, failureCallback);
   }
 
   //确认删除操作.
   confirmDel(successCallback, failureCallback) {
 
-    let that = this
+    let that = this;
 
-    MessageBox.confirm('此操作将永久删除该条记录, 是否继续?', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(function () {
+    MessageBox.confirm("此操作将永久删除该条记录, 是否继续?", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning"
+    }).then(function() {
 
-        that.httpDel(function () {
+        that.httpDel(function() {
           NotificationBox.success({
-            message: '成功删除!'
-          })
+            message: "成功删除!"
+          });
 
-          if (typeof successCallback === 'function') {
-            successCallback()
+          if (typeof successCallback === "function") {
+            successCallback();
           }
 
-        }, failureCallback)
+        }, failureCallback);
 
       },
-      function () {
-        if (typeof failureCallback === 'function') {
-          failureCallback()
+      function() {
+        if (typeof failureCallback === "function") {
+          failureCallback();
         }
       }
-    )
+    );
   }
 
   getUrlCreate() {
-    let prefix = this.getUrlPrefix()
+    let prefix = this.getUrlPrefix();
 
-    return prefix + '/create'
+    return prefix + "/create";
   }
 
   getUrlDel(uuid = null) {
-    let prefix = this.getUrlPrefix()
+    let prefix = this.getUrlPrefix();
 
     if (uuid === null) {
-      return prefix + '/del/{uuid}'
+      return prefix + "/delete?uuid={uuid}";
     } else {
-      return prefix + '/del/' + uuid
+      return prefix + "/delete?uuid=" + uuid;
     }
 
   }
 
   getUrlEdit() {
-    let prefix = this.getUrlPrefix()
+    let prefix = this.getUrlPrefix();
 
-    return prefix + '/edit'
+    return prefix + "/edit";
   }
 
   getUrlDetail(uuid = null) {
-    let prefix = this.getUrlPrefix()
+    let prefix = this.getUrlPrefix();
 
     if (uuid === null) {
-      return prefix + '/detail/{uuid}'
+      return prefix + "/detail?uuid={uuid}";
     } else {
-      return prefix + '/detail/' + uuid
+      return prefix + "/detail?uuid=" + uuid;
     }
 
   }
 
   getUrlPage() {
-    let prefix = this.getUrlPrefix()
+    let prefix = this.getUrlPrefix();
 
-    return prefix + '/page'
+    return prefix + "/page";
   }
 
   getUrlSort() {
-    let prefix = this.getUrlPrefix()
+    let prefix = this.getUrlPrefix();
 
-    return prefix + '/sort'
+    return prefix + "/sort";
   }
 
 }
