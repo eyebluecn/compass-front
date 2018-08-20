@@ -3,7 +3,18 @@
     <div class="skin-wrapper"></div>
 
     <div class="container">
-      <div class="row mt200">
+      <div class="row search-area">
+        <div class="col-md-5 col-md-offset-3">
+          <input title="搜索框" class="form-control" v-model="searchText" @keydown.enter="startSearch"/>
+        </div>
+        <div class="col-md-1">
+          <button class="btn btn-primary" @click.stop.prevent="startSearch">
+            <i class="fa fa-search"></i>
+            搜索
+          </button>
+        </div>
+      </div>
+      <div class="row content-area">
 
         <div class="com-md-12 text-right">
           <button class="btn btn-primary btn-sm" @click.stop.prevent="createSite()">
@@ -12,7 +23,7 @@
           </button>
         </div>
         <div class="col-md-12">
-          <a v-for="(site,index) in pager.data" :href="site.url" target="_blank">
+          <a class="link-block" v-for="(site,index) in pager.data" :href="site.url" target="_blank">
             {{site.name}}
           </a>
         </div>
@@ -33,6 +44,7 @@
   export default {
     data() {
       return {
+        searchText: null,
         pager: new Pager(Site),
         user: this.$store.state.user
       };
@@ -97,6 +109,9 @@
 
         });
 
+      },
+      startSearch() {
+        window.open("http://caup.cn/search?q=" + this.searchText)
       }
 
 
@@ -117,11 +132,22 @@
   @import "../../assets/css/global/variables";
 
   .page-index {
+    .search-area {
+      margin-top: 100px;
+    }
+    .content-area {
+      background: rgba(255, 255, 255, 0.8);
+
+      margin-top: 200px;
+
+      .link-block {
+        color: black;
+      }
+    }
 
   }
 
   .skin-wrapper {
-
 
     background-image: url(https://ss2.bdstatic.com/lfoZeXSm1A5BphGlnYG/skin/117.jpg);
 
