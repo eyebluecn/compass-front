@@ -8,25 +8,22 @@
 </template>
 
 <script>
-  import NprogressContainer from 'vue-nprogress/src/NprogressContainer'
 
+  import NprogressContainer from "vue-nprogress/src/NprogressContainer";
 
   export default {
     data() {
-      return {
-        preference: this.$store.state.preference
-      }
+      return {};
     },
     computed: {},
     components: {
       NprogressContainer
     },
     mounted() {
-      let that = this;
-      this.preference.httpFetch()
+
 
     }
-  }
+  };
 </script>
 
 
