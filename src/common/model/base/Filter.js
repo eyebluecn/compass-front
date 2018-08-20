@@ -4,25 +4,7 @@
  */
 import BaseEntity from './BaseEntity'
 import { isEmptyObject } from '../../util/Utils'
-
-let Type = {
-  //用于boolean筛选
-  CHECK: 'CHECK',
-  //用于文本输入筛选
-  INPUT: 'INPUT',
-  //用于排序字段筛选
-  SORT: 'SORT',
-  //用于有限的状态筛选
-  SELECTION: 'SELECTION',
-  //用于从有限的状态中选出多项，比如：status = RUNNING or status = STOP
-  MULTI_SELECTION: 'MULTI_SELECTION',
-  //用于Pager筛选
-  HTTP_SELECTION: 'HTTP_SELECTION',
-  //用于输入框从远程筛选。
-  HTTP_INPUT_SELECTION: 'HTTP_INPUT_SELECTION',
-  //用于按照时间筛选
-  DATE_TIME_SELECTION: 'DATE_TIME_SELECTION'
-}
+import {FilterType} from "./FilterType";
 
 export default class Filter {
 
@@ -57,19 +39,19 @@ export default class Filter {
     //HTTP_SELECTION的过滤条件。
     this.initFilter = {}
 
-    if (type === Type.SELECTION) {
+    if (type === FilterType.SELECTION) {
       if (!options || !(options instanceof Array)) {
         console.error('Filter SELECTION 的 options必须指定，并且为数组，同时必须包含name和value键值（style可选）！')
 
       }
-    } else if (type === Type.MULTI_SELECTION) {
+    } else if (type === FilterType.MULTI_SELECTION) {
       if (!options || !(options instanceof Array)) {
         console.error('Filter MULTI_SELECTION 的 options必须指定，并且为数组，同时必须包含name和value键值（style可选）！')
 
       } else {
         this.value = []
       }
-    } else if (type === Type.HTTP_SELECTION) {
+    } else if (type === FilterType.HTTP_SELECTION) {
       if (!Clazz || !(Clazz.prototype instanceof BaseEntity)) {
         console.error('Clazz必须指定，并且为BaseEntity的子类！')
 
@@ -80,9 +62,9 @@ export default class Filter {
 
   isEmpty () {
 
-    if (this.type === Type.MULTI_SELECTION) {
+    if (this.type === FilterType.MULTI_SELECTION) {
       return isEmptyObject(this.value)
-    } else if (this.type === Type.CHECK) {
+    } else if (this.type === FilterType.CHECK) {
       return this.value === null
     } else {
       return !this.value
@@ -100,7 +82,7 @@ export default class Filter {
       return
     }
 
-    if (this.type === Type.MULTI_SELECTION) {
+    if (this.type === FilterType.MULTI_SELECTION) {
 
       let draftArray = null
       if (value instanceof Array) {
@@ -125,7 +107,7 @@ export default class Filter {
         }
       }
       this.value = arr
-    } else if (this.type === this.Type.SELECTION) {
+    } else if (this.type === FilterType.SELECTION) {
 
       for (let j = 0; j < this.options.length; j++) {
 
@@ -145,7 +127,7 @@ export default class Filter {
   //把filter中的value装填到params中，供params去进行http请求。
   getParam () {
 
-    if (this.type === Type.MULTI_SELECTION) {
+    if (this.type === FilterType.MULTI_SELECTION) {
       if (this.value && this.value.length) {
         return this.value.toString()
       } else {
@@ -159,4 +141,3 @@ export default class Filter {
 
 }
 
-Filter.prototype.Type = Type

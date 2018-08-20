@@ -59,9 +59,9 @@ export default class Tank extends BaseEntity {
 
   }
 
-  static URL_FETCH_UPLOAD_TOKEN = '/tank/fetch/upload/token'
-  static URL_DOWNLOAD = '/tank/download/'
-  static URL_CONFIRM = '/tank/confirm'
+  static URL_FETCH_UPLOAD_TOKEN = '/api/tank/fetch/upload/token'
+  static URL_DOWNLOAD = '/api/tank/download/'
+  static URL_CONFIRM = '/api/tank/confirm'
 
   render(obj) {
     super.render(obj)

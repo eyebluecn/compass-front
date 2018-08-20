@@ -2,6 +2,7 @@ import BaseEntity from "../base/BaseEntity";
 import Filter from "../base/Filter";
 import Tank from "../tank/Tank";
 import User from "../user/User";
+import { FilterType } from "../base/FilterType";
 
 
 export default class Site extends BaseEntity {
@@ -46,12 +47,12 @@ export default class Site extends BaseEntity {
 
   getFilters() {
     return [
-      new Filter(Filter.prototype.Type.INPUT, "名称", "name"),
-      new Filter(Filter.prototype.Type.INPUT, "链接", "url"),
-      new Filter(Filter.prototype.Type.CHECK, "可见性", "visible"),
-      new Filter(Filter.prototype.Type.SORT, "修改时间", "orderModifyTime"),
-      new Filter(Filter.prototype.Type.SORT, "创建时间", "orderCreateTime"),
-      new Filter(Filter.prototype.Type.SORT, "排序", "orderSort")
+      new Filter(FilterType.INPUT, "名称", "name"),
+      new Filter(FilterType.INPUT, "链接", "url"),
+      new Filter(FilterType.CHECK, "可见性", "visible"),
+      new Filter(FilterType.SORT, "修改时间", "orderModifyTime"),
+      new Filter(FilterType.SORT, "创建时间", "orderCreateTime"),
+      new Filter(FilterType.SORT, "排序", "orderSort")
     ];
   }
 

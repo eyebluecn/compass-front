@@ -2,8 +2,12 @@ import Base from './Base'
 import Vue from 'vue'
 import $ from 'jquery'
 import {isInteger} from '../../util/Utils'
+import Filter from "./Filter";
+import {FilterType} from "./FilterType";
 
 export default class Pager extends Base {
+
+  static MAX_PAGE_SIZE = 500
 
   constructor(Clazz, pageSize = 10, page = 0) {
     super()
@@ -19,6 +23,9 @@ export default class Pager extends Base {
 
     //供nb-pager使用的
     this.offset = 3
+
+    //是否去服务器请求过。主要用来判断hasMore.
+    this.hasRequested = false
 
     //list attributes.
     if (Clazz && (Clazz.prototype instanceof Base)) {
@@ -57,11 +64,34 @@ export default class Pager extends Base {
 
   }
 
+  //hasMore
+  hasMore() {
+
+    if (this.hasRequested) {
+
+      return this.totalPages > this.page + 1;
+
+    } else {
+      return true
+    }
+
+  }
+
   //重置Filter。
   resetFilter() {
     for (let i = 0; i < this.filters.length; i++) {
       let filter = this.filters[i]
       filter.reset()
+    }
+  };
+
+  //重置Filter。
+  resetSortFilters() {
+    for (let i = 0; i < this.filters.length; i++) {
+      let filter = this.filters[i]
+      if (filter.type === FilterType.SORT) {
+        filter.reset()
+      }
     }
   };
 
@@ -128,6 +158,20 @@ export default class Pager extends Base {
       }
     }
   };
+
+  //获取当前进行sort的那个filter
+  getCurrentSortFilter() {
+    if (!this.filters || !this.filters.length) {
+      return null
+    }
+    for (let i = 0; i < this.filters.length; i++) {
+      let filter = this.filters[i]
+      if (filter.type === FilterType.SORT && !filter.isEmpty()) {
+        return filter
+      }
+    }
+    return null
+  }
 
   //根据一个key来获取某个filter
   getFilterValue(key) {
@@ -205,7 +249,7 @@ export default class Pager extends Base {
 
         let value = query[filter.key]
         //check类型的要转成boolean.
-        if (filter.type === filter.Type.CHECK) {
+        if (filter.type === FilterType.CHECK) {
           if (value === 'true') {
             value = true
           } else if (value === 'false') {
@@ -231,12 +275,14 @@ export default class Pager extends Base {
       history.replaceState({}, '', Vue.store.state.route.path + '?' + $.param(params))
     }
 
+    //是否请求过的标志位变更。
+    this.hasRequested = true
     this.httpGet(url, params, function (response) {
       that.loading = false
 
       that.render(response.data.data)
 
-      successCallback && successCallback(response)
+      that.safeCallback(successCallback)(response)
 
     }, errorCallback)
 

@@ -1,8 +1,9 @@
 import Base from "./Base";
 import { str2Date } from "../../filter/time";
 import Filter from "./Filter";
-import { MessageBox, Notification as NotificationBox } from "element-ui";
-import Schema from "../../../../node_modules/async-validator";
+import { MessageBox, Message } from "element-ui";
+import Schema from "async-validator";
+import { appendString } from "../../util/Utils";
 
 export default class BaseEntity extends Base {
 
@@ -15,7 +16,7 @@ export default class BaseEntity extends Base {
     this.deleted = false;
 
     //表单验证专用
-    this.validatorSchema = null;
+    this.validatorSchema = {};
   }
 
   //This is just a intermedia method.
@@ -30,7 +31,6 @@ export default class BaseEntity extends Base {
   //获取过滤器，必须每次动态生成，否则会造成filter逻辑混乱。
   getFilters() {
     return [
-      new Filter("SORT", "ID", "orderId")
     ];
   };
 
@@ -42,12 +42,12 @@ export default class BaseEntity extends Base {
   }
 
 
-//该实体目前是否能够编辑
+  //该实体目前是否能够编辑
   canEdit() {
     console.error("canEdit: you should override this base method.");
   }
 
-//该实体目前是否能够删除
+  //该实体目前是否能够删除
   canDel() {
     console.error("canDel: you should override this base method.");
   }
@@ -56,24 +56,26 @@ export default class BaseEntity extends Base {
     console.error("getForm: you should override this base method.");
   }
 
-  /*validate () {
-    console.error('validate: you should override this base method.')
-  }*/
 
+  //验证某个Schema是否正确。返回错误信息，null表示没有错误。
   validate(validatorSchema = this.validatorSchema) {
-    let valid = true;
+
+    let errorMessage = null;
     let that = this;
     let schema = validatorSchema;
     if (!schema) {
-      return true;
+      return null;
     }
 
-    let validateArr = Object.keys(schema);      //遍历规则的key值
+    //遍历规则的key值
+    let validateArr = Object.keys(schema);
     let validateObj = {};
     validateArr.forEach(function(i) {
       validateObj[i] = that[i];
       schema[i].error = null;
     });
+
+    //这里相当于要把自定义的error给去掉啦。
     let descriptor = {};
     validateArr.forEach(function(i) {
       descriptor[i] = schema[i].rules;
@@ -82,14 +84,23 @@ export default class BaseEntity extends Base {
     new Schema(descriptor).validate(validateObj, (errors, fields) => {
 
       if (errors) {
-        errors.forEach(function(i) {
-          schema[i.field].error = i.message;
+        console.log("此刻的errors:", errors);
+
+        errors.forEach(function(errorItem) {
+
+          //回填到每个字段的验证细节上。
+
+          schema[errorItem.field].error = appendString(schema[errorItem.field].error, errorItem.message, ";");
+          errorMessage = appendString(errorMessage, errorItem.message, ";");
+
+          console.log("此刻的errorItem:", errorItem);
+          console.log("此刻的schema[errorItem.field]:", schema[errorItem.field]);
         });
-        valid = false;
       }
     });
 
-    return valid;
+    return errorMessage;
+
   }
 
   //common http detail methods.
@@ -115,18 +126,17 @@ export default class BaseEntity extends Base {
 
     this.httpGet(url, {}, function(response) {
       that.detailLoading = false;
-      that.editMode = true;
 
       that.render(response.data.data);
 
-      successCallback && successCallback(response);
+      that.safeCallback(successCallback)(response);
 
     }, function(response) {
 
       that.detailLoading = false;
 
       if (typeof errorCallback === "function") {
-        errorCallback();
+        errorCallback(that.getErrorMessage(response), response);
       } else {
         //没有传入错误处理的方法就采用默认处理方法：toast弹出该错误信息。
         that.defaultErrorHandler(response);
@@ -144,8 +154,8 @@ export default class BaseEntity extends Base {
       url = this.getUrlEdit();
     }
 
-    if (!this.validate()) {
-      this.errorMessage = "验证规则未通过，请按照要求修改后再提交！";
+    this.errorMessage = this.validate();
+    if (this.errorMessage) {
       that.defaultErrorHandler(this.errorMessage, errorCallback);
       return;
     }
@@ -154,7 +164,7 @@ export default class BaseEntity extends Base {
 
       that.render(response.data.data);
 
-      successCallback && successCallback(response);
+      that.safeCallback(successCallback)(response);
 
     }, errorCallback);
 
@@ -179,13 +189,13 @@ export default class BaseEntity extends Base {
 
     this.httpPost(url, {}, function(response) {
 
-      successCallback && successCallback(response);
+      that.safeCallback(successCallback)(response);
 
     }, errorCallback);
 
   }
 
-  httpSort(entity1, entity2, successCallback, failureCallback) {
+  httpSort(entity1, entity2, successCallback, errorCallback) {
 
     let uuid1 = entity1.uuid;
     let sort1 = entity2.sort;
@@ -197,7 +207,7 @@ export default class BaseEntity extends Base {
     if (!uuid1 || !uuid2 || !(sort1 === 0 || sort1) || !(sort2 === 0 || sort2)) {
 
       this.errorMessage = "参数不齐！";
-      that.defaultErrorHandler(this.errorMessage, failureCallback);
+      that.defaultErrorHandler(this.errorMessage, errorCallback);
 
       return;
     }
@@ -206,7 +216,7 @@ export default class BaseEntity extends Base {
 
     if (!url) {
 
-      that.defaultErrorHandler(this.errorMessage, failureCallback);
+      that.defaultErrorHandler(this.errorMessage, errorCallback);
       return;
     }
 
@@ -220,15 +230,14 @@ export default class BaseEntity extends Base {
     this.httpPost(url, params, function() {
       entity1.sort = sort1;
       entity2.sort = sort2;
-      if (typeof successCallback === "function") {
-        successCallback();
-      }
+      that.safeCallback(successCallback)();
 
-    }, failureCallback);
+
+    }, errorCallback);
   }
 
   //确认删除操作.
-  confirmDel(successCallback, failureCallback) {
+  confirmDel(successCallback, errorCallback) {
 
     let that = this;
 
@@ -239,7 +248,7 @@ export default class BaseEntity extends Base {
     }).then(function() {
 
         that.httpDel(function() {
-          NotificationBox.success({
+          Message.success({
             message: "成功删除!"
           });
 
@@ -247,13 +256,12 @@ export default class BaseEntity extends Base {
             successCallback();
           }
 
-        }, failureCallback);
+        }, errorCallback);
 
       },
       function() {
-        if (typeof failureCallback === "function") {
-          failureCallback();
-        }
+        that.safeCallback(errorCallback)();
+
       }
     );
   }
@@ -268,9 +276,9 @@ export default class BaseEntity extends Base {
     let prefix = this.getUrlPrefix();
 
     if (uuid === null) {
-      return prefix + "/delete?uuid={uuid}";
+      return prefix + "/del/{uuid}";
     } else {
-      return prefix + "/delete?uuid=" + uuid;
+      return prefix + "/del/" + uuid;
     }
 
   }

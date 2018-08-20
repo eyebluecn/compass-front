@@ -1,7 +1,7 @@
 <template>
-	<div class="nb-filter-http-selection" v-show="filter.visible">
+  <div class="nb-filter-http-selection" v-show="filter.visible">
 
-		<div class="title-area clearfix">
+    <div class="title-area clearfix">
 			<span>
 				<span>
 					{{activeItem.name ? activeItem.name : "请选择..."}}
@@ -10,46 +10,45 @@
 					<i class="fa fa-times-circle-o pager-selection-close"></i>
 				</a>
 			</span>
-			<button class="btn btn-default btn-sm ml15" @click="show=!show">
+      <button class="btn btn-default btn-sm ml15" @click="show=!show">
 				<span v-if="show">
             <i class="fa fa-angle-up"></i>
 				收起
           </span>
-				<span v-else>
+        <span v-else>
             <i class="fa fa-angle-down"></i>
 				选择
         </span>
 
-			</button>
-		</div>
-		<NbExpanding>
-			<div v-show="show">
-				<div class="content-area">
-					<div class="row">
+      </button>
+    </div>
+    <NbExpanding>
+      <div v-show="show">
+        <div class="content-area">
+          <div class="row">
 
-						<div class="col-xs-12">
-							<div class="mb10 p10 cursor br4 border" v-for="item in pager.getList()"
-							     @click.stop.prevent="clickItem(item)"
-							     :class="{'bg-white':item.uuid !== activeItem.uuid,'bg-azure':item.uuid === activeItem.uuid}">
-								<div>
-									<span class="f15">{{item.name}}</span>
-								</div>
-							</div>
-						</div>
+            <div class="col-xs-12">
+              <div class="mb10 p10 cursor br4 border" v-for="item in pager.data"
+                   @click.stop.prevent="clickItem(item)"
+                   :class="{'bg-white':item.uuid !== activeItem.uuid,'bg-azure':item.uuid === activeItem.uuid}">
+                <div>
+                  <span class="f15">{{item.name}}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xs-12 mt20">
+              <NbPager :pager="pager" @change="refresh"></NbPager>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </NbExpanding>
 
 
-						<div class="col-xs-12 mt20">
-							<NbPager :pager="pager" @change="refresh"></NbPager>
-						</div>
-
-					</div>
-				</div>
-			</div>
-
-		</NbExpanding>
-
-
-	</div>
+  </div>
 
 </template>
 
@@ -60,7 +59,7 @@
   import NbPager from '../NbPager.vue'
 
   export default {
-    data () {
+    data() {
       return {
         show: false,
         pager: new Pager(this.filter.Clazz),
@@ -94,14 +93,14 @@
     },
     computed: {},
     methods: {
-      clear () {
+      clear() {
         this.activeItem.render(new (this.filter.Clazz)())
 
         this.filter.value = null
         this.$emit("change");
 
       },
-      clickItem (item) {
+      clickItem(item) {
         this.activeItem.render(item)
 
         this.filter.value = this.activeItem.uuid
@@ -109,11 +108,11 @@
         this.show = false
         this.$emit("change");
       },
-      search () {
+      search() {
         this.pager.page = 0
         this.refresh()
       },
-      refresh () {
+      refresh() {
 
         if (this.filter.initFilter) {
 
@@ -128,7 +127,7 @@
         this.pager.httpFastPage()
       }
     },
-    mounted () {
+    mounted() {
       this.refresh()
     }
   }
@@ -136,17 +135,17 @@
 
 <style lang="less" rel="stylesheet/less">
 
-	.nb-filter-http-selection {
+  .nb-filter-http-selection {
 
-		.title-area {
+    .title-area {
 
-		}
-		.content-area {
-			margin-top: 10px;
-			padding: 10px;
-			border: 1px dashed #1167a9;
-		}
+    }
+    .content-area {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px dashed #1167a9;
+    }
 
-	}
+  }
 
 </style>

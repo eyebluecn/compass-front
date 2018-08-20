@@ -31,8 +31,10 @@
 							<span class="f16">
 								<span class="black">
 											{{u.nickname}}
-                  <span v-if="u.status === 'DISABLE'" :class="'label label-'+u.getStatusStyle()">禁用</span>
-                  <span v-if="u.status === 'NEW'" :class="'label label-'+u.getStatusStyle()">申请注册</span>
+                  <span v-if="u.status === UserStatus.DISABLE"
+                        :class="'label label-'+UserStatusMap[u.status].style">禁用</span>
+                  <span v-if="u.status === UserStatus.NEW"
+                        :class="'label label-'+UserStatusMap[u.status].style">申请注册</span>
 									<span v-if="u.uuid === user.uuid" class="text-danger">(It's you)</span>
 								</span>
 							</span>
@@ -40,7 +42,7 @@
               <div>
 
                 <div class="mt5">
-                  <span>{{u.getRoleName()}}</span>
+                  <span>{{UserRoleMap[u.role].name}}</span>
                   <span>
                     <i class="fa fa-phone text-info" v-if="u.phone"></i>
                   {{u.phone}}
@@ -102,24 +104,31 @@
 
     </div>
 
-
   </div>
 
 </template>
 
 <script>
-  import NbFilter from '../../common/widget/filter/NbFilter.vue'
-  import NbPager from '../../common/widget/NbPager.vue'
-  import Pager from '../../common/model/base/Pager'
-  import User from '../../common/model/user/User'
+  import NbFilter from "../../common/widget/filter/NbFilter.vue";
+  import NbPager from "../../common/widget/NbPager.vue";
+  import Pager from "../../common/model/base/Pager";
+  import User from "../../common/model/user/User";
+  import { UserRole, UserRoleList, UserRoleMap } from "../../common/model/user/UserRole";
+  import { UserStatus, UserStatusList, UserStatusMap } from "../../common/model/user/UserStatus";
 
   export default {
-    name: 'list',
+    name: "list",
     data() {
       return {
+        UserRole,
+        UserRoleMap,
+        UserRoleList,
+        UserStatus,
+        UserStatusMap,
+        UserStatusList,
         pager: new Pager(User),
         user: this.$store.state.user
-      }
+      };
     },
     components: {
       NbFilter,
@@ -127,25 +136,25 @@
     },
     methods: {
       search() {
-        this.pager.page = 0
-        this.refresh()
+        this.pager.page = 0;
+        this.refresh();
       },
       refresh() {
-        this.pager.httpFastPage()
+        this.pager.httpFastPage();
       },
       changeStatusOk(user) {
-        user.httpStatus("OK")
+        user.httpStatus("OK");
       },
       changeStatusDisable(user) {
-        let that = this
-        this.$prompt('请输入禁用理由', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        let that = this;
+        this.$prompt("请输入禁用理由", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
           inputPattern: /^.{0,45}$/,
-          inputErrorMessage: '选填，不超过45个字'
-        }).then(({value}) => {
+          inputErrorMessage: "选填，不超过45个字"
+        }).then(({ value }) => {
 
-          user.httpStatus('DISABLE', value)
+          user.httpStatus("DISABLE", value);
 
         }).catch(() => {
 
@@ -154,10 +163,10 @@
       }
     },
     mounted() {
-      this.pager.enableHistory()
-      this.refresh()
+      this.pager.enableHistory();
+      this.refresh();
     }
-  }
+  };
 </script>
 
 <style lang="less" rel="stylesheet/less">

@@ -18,7 +18,7 @@
 
         <div class="form-horizontal pt10 pb10">
 
-          <div class="form-group" v-for="filter in filters" v-if="filter.type === filter.Type.INPUT && filter.visible">
+          <div class="form-group" v-for="filter in filters" v-if="filter.type === FilterType.INPUT && filter.visible">
             <label class="col-md-2 control-label pt5">
               {{filter.name}}
               <span v-if="showOverwriteSwitcher">
@@ -39,7 +39,7 @@
             <label class="col-md-2 control-label pt5">排序</label>
             <div class="col-md-10">
 
-							<span v-for="filter in filters" v-if="filter.type === filter.Type.SORT && filter.visible">
+							<span v-for="filter in filters" v-if="filter.type === FilterType.SORT && filter.visible">
 								<NbFilterSort :filter="filter" @change="search" :disabled="!editable"/>
 
                 <span class="mr30" v-if="showOverwriteSwitcher">
@@ -54,7 +54,7 @@
             <label class="col-md-2 control-label pt5">勾选</label>
             <div class="col-md-10">
 
-							<span v-for="filter in filters" v-if="filter.type === filter.Type.CHECK && filter.visible">
+							<span v-for="filter in filters" v-if="filter.type === FilterType.CHECK && filter.visible">
 								<NbFilterCheck :filter="filter" @change="search"/>
                 <span class="mr30" v-if="showOverwriteSwitcher">
                   <NbSwitcher size="sm" v-model="filter.overwrite" :disabled="!editable || !overwrite"/>
@@ -65,7 +65,7 @@
           </div>
 
           <div class="form-group" v-for="filter in filters"
-               v-if="filter.type === filter.Type.SELECTION && filter.visible">
+               v-if="filter.type === FilterType.SELECTION && filter.visible">
             <label class="col-md-2 control-label pt5">
               {{filter.name}}
               <span v-if="showOverwriteSwitcher">
@@ -79,7 +79,7 @@
           </div>
 
           <div class="form-group" v-for="filter in filters"
-               v-if="filter.type === filter.Type.MULTI_SELECTION && filter.visible">
+               v-if="filter.type === FilterType.MULTI_SELECTION && filter.visible">
             <label class="col-md-2 control-label pt5">
               {{filter.name}}
               <span v-if="showOverwriteSwitcher">
@@ -93,7 +93,7 @@
           </div>
 
           <div class="form-group" v-for="filter in filters"
-               v-if="filter.type === filter.Type.HTTP_SELECTION && filter.visible">
+               v-if="filter.type === FilterType.HTTP_SELECTION && filter.visible">
             <label class="col-md-2 control-label pt5">
               {{filter.name}}
               <span v-if="showOverwriteSwitcher">
@@ -106,7 +106,7 @@
           </div>
 
           <div class="form-group" v-for="filter in filters"
-               v-if="filter.type === filter.Type.HTTP_INPUT_SELECTION && filter.visible">
+               v-if="filter.type === FilterType.HTTP_INPUT_SELECTION && filter.visible">
             <label class="col-md-2 control-label pt5">
               {{filter.name}}
               <span v-if="showOverwriteSwitcher">
@@ -124,7 +124,7 @@
           </div>
 
           <div class="form-group" v-for="filter in filters"
-               v-if="filter.type === filter.Type.DATE_TIME_SELECTION && filter.visible">
+               v-if="filter.type === FilterType.DATE_TIME_SELECTION && filter.visible">
             <label class="col-md-2 control-label pt5">
               {{filter.name}}
               <span v-if="showOverwriteSwitcher">
@@ -158,7 +158,6 @@
 
   import NbExpanding from '../NbExpanding'
   import NbSwitcher from '../NbSwitcher'
-  import Filter from "../../model/base/Filter";
   import NbFilterSort from "./NbFilterSort";
   import NbFilterCheck from "./NbFilterCheck";
   import NbFilterDateTime from "./NbFilterDateTime.vue";
@@ -166,10 +165,12 @@
   import NbFilterHttpInputSelection from "./NbFilterHttpInputSelection";
   import NbFilterMultiSelection from "./NbFilterMultiSelection";
   import NbFilterHttpSelection from "./NbFilterHttpSelection";
+  import {FilterType} from "../../model/base/FilterType";
 
   export default {
     data() {
       return {
+        FilterType,
         show: false
       }
     },
@@ -240,7 +241,7 @@
       hasSortType() {
         for (let i = 0; i < this.filters.length; i++) {
           let filter = this.filters[i];
-          if (filter.type === Filter.prototype.Type.SORT && filter.visible) {
+          if (filter.type === FilterType.SORT && filter.visible) {
             return true;
           }
         }
@@ -249,7 +250,7 @@
       hasCheckType() {
         for (let i = 0; i < this.filters.length; i++) {
           let filter = this.filters[i];
-          if (filter.type === Filter.prototype.Type.CHECK && filter.visible) {
+          if (filter.type === FilterType.CHECK && filter.visible) {
             return true;
           }
 

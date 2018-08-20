@@ -8,7 +8,7 @@
         </div>
         <div class="text-area">
           <div class="nickname">
-            {{user.role === 'GUEST' ? '请登录' : user.nickname}}
+            {{user.role === UserRole.GUEST ? "请登录" : user.nickname}}
           </div>
         </div>
       </div>
@@ -65,16 +65,18 @@
   </nav>
 </template>
 <script>
-  import {FeatureType} from "../../common/model/feature/FeatureType";
+  import { FeatureType } from "../../common/model/feature/FeatureType";
+  import { UserRole } from "../../common/model/user/UserRole";
 
 
   export default {
 
     data() {
       return {
+        UserRole,
         FeatureType,
         user: this.$store.state.user
-      }
+      };
     },
     computed: {
       showDrawer() {
@@ -99,10 +101,10 @@
 
       },
       eatClick() {
-        console.info("eat click")
+        console.info("eat click");
       },
       goHome() {
-        window.open("/")
+        window.open("/");
       },
 
       updateBody() {
@@ -125,7 +127,7 @@
 
       this.updateBody();
     }
-  }
+  };
 </script>
 
 <style lang="less" rel="stylesheet/less">
